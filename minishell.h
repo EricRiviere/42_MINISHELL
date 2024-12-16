@@ -7,6 +7,8 @@
 //------------------
 # include <stdlib.h> //malloc
 # include <unistd.h> // write
+# include "libft/libft.h"
+# include <fcntl.h>
 
 //------------------ TOKEN TYPE ENUM
 typedef enum    s_type
@@ -75,13 +77,14 @@ int is_special_char(char c);
 //------------------ ENVIROMENT FUNCTIONS
 void    free_env_list(t_env *env_list);
 void    add_env_variable(t_env **env_list, char *key, char *value);
-t_env *init_env_list(char **env); //*refactorizar, muy larga
+t_env *init_env_list(char **env);
 void    print_env_list(t_env *env_list);
 char    *get_env_value(char *str, t_env *env_list);
 //------------------ TOKENIZE FUNCTIONS
 t_args  *pass_args(char *line, int *i, t_token **tkn_lst, int spaces);
 t_token *init_token(t_type type);
 void    add_token(t_token **tkn_lst, t_token *token);
+void remove_token(t_token **head, t_token *to_remove);
 void    free_tkn_lst(t_token *tkn_lst);
 t_token    *parse_quote(t_args *args, char quote, int start, int end);
 t_token   *manage_quote(t_args *args, int start);

@@ -40,39 +40,44 @@ void    add_env_variable(t_env **env_list, char *key, char *value)
     *env_list = new_node;
 }
 
+static void    double_free_char(char *s1, char *s2)
+{
+    if (!s1 || !s2)
+        return ;
+    free(s1);
+    free(s2);
+}
+
 t_env *init_env_list(char **env)
 {
-    t_env   *env_list = NULL;
-    char    *key;
-    char    *value;
-    char    *separator;
+    t_env *env_list;
+    char *separator;
+    char *key;
+    char *value;
 
-    while(*env)
+    env_list = NULL;
+    while (*env)
     {
         separator = ft_strchr(*env, '=');
         if (separator)
         {
-            if (!(key = ft_strndup(*env, separator - *env)))
+            key = ft_strndup(*env, separator - *env);
+            value = ft_strdup(separator + 1);
+            if (!key || !value)
             {
-                perror("malloc error in env key duplication\n");
-                free_env_list(env_list);
-                return (NULL);
-            }
-            if(!(value = ft_strdup(separator + 1)))
-            {
-                perror("malloc error in env value duplication\n");
-                free(key);
+                perror("malloc error in environment variable duplication");
+                double_free_char(key, value);
                 free_env_list(env_list);
                 return (NULL);
             }
             add_env_variable(&env_list, key, value);
-            free(key);
-            free(value);
+            double_free_char(key, value);
         }
         env++;
     }
     return (env_list);
 }
+
 
 void    print_env_list(t_env *env_list)
 {

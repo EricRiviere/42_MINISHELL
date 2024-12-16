@@ -1,5 +1,13 @@
 #include "minishell.h"
 
+
+//Error & return NULL function
+char *return_error(char *str)
+{
+    perror(str);
+    return (NULL);
+}
+
 t_args  *pass_args(char *line, int *i, t_token **tkn_lst, int spaces)
 {
     t_args  *args;
@@ -51,6 +59,22 @@ void    add_token(t_token **tkn_lst, t_token *token)
         token->prev = curr_tkn;
     }
 }
+
+void remove_token(t_token **head, t_token *to_remove)
+{
+    if (!head || !*head || !to_remove)
+        return;
+
+    if (to_remove->prev)
+        to_remove->prev->next = to_remove->next;
+    if (to_remove->next)
+        to_remove->next->prev = to_remove->prev;
+    if (*head == to_remove)
+        *head = to_remove->next;
+    free(to_remove->value);
+    free(to_remove);
+}
+
 
 void    free_tkn_lst(t_token *tkn_lst)
 {
@@ -112,14 +136,10 @@ t_token *parse_operator(t_operator operator, int spaces)
     t_token *tkn;
 
     char    *operator_name[]={"<", ">", "<<", ">>", "|"};
-    tkn = init_token(OPERATOR);
     name = ft_strdup(operator_name[operator]);
     if (!name)
-    {
-        perror("strdup token error\n");
-        free(tkn);
-        return (NULL);
-    }
+        return_error("strdup token error\n");
+    tkn = init_token(OPERATOR);
     tkn->value = name;
     tkn->has_space = spaces;
     return (tkn);
@@ -179,14 +199,10 @@ t_token *manage_word(t_args *args)
         (*args->i)++;
     }
     end = (*args->i);
-    tkn = init_token(WORD);
     word = ft_strndup(&(args->line[start]), end - start);
     if (!word)
-    {
-        perror("strndup token error\n");
-        free(tkn);
-        return (NULL);
-    }
+        return_error("strndup token error\n");
+    tkn = init_token(WORD);
     tkn->value = word;
     tkn->has_space = args->spaces;
     tkn->expand = expand_value;
