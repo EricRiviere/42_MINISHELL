@@ -59,6 +59,21 @@ typedef struct s_env
     struct s_env *next;
 }   t_env;
 //------------------
+//------------------ COMANDS STRUCTS TEST
+typedef struct s_redir
+{
+    char    **operator;
+    char    **file;
+}   t_redir;
+
+
+typedef struct s_command
+{
+    char    *cmd;
+    char    **args;
+    t_redir *redirections;
+}   t_command;
+//------------------
 //------------------ LIBFT FUNCTIONS
 size_t  ft_strlen(const char *str);
 char	*ft_strchr(const char *s, int c);
@@ -91,7 +106,7 @@ t_token *parse_operator(t_operator operator, int spaces);
 t_operator get_operator_type(const char *line, int i);
 int create_operator_token(t_args *args, t_operator operator, int increment);
 t_token *manage_operator(t_args *args);
-t_token *manage_word(t_args *args); //*refactorizar muy larga
+t_token *manage_word(t_args *args);
 void skip_spaces(const char *line, int *i, int *spaces);
 int process_token(t_args *args);
 t_token *tokenize(char *line);
@@ -100,6 +115,11 @@ int syntax_check(t_token *tkn_lst);
 //------------------ EXPANSION FUNCTIONS
 char *ft_strjoin_free(char *s1, char *s2);
 int is_valid_env_char(char c);
-char *expand_value(t_token *token, t_env *env_lst);//*refactorizar muy larga
+char *expand_value(t_token *token, t_env *env_lst);
 void expand_variables(t_token **tkn_lst, t_token *token, t_env *env_lst);
+//------------------ COMMAND FUNCTIONS
+//void    commands(t_token *tkn_lst);
+t_command **commands(t_token *tkn_lst);
+void preprocess_tokens(t_token **tkn_lst);
+void free_cmd_list(t_command **cmd_list);
 #endif
