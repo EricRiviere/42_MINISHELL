@@ -10,12 +10,14 @@ static void process_heredoc(t_token *heredoc_token)
     fd = open("/tmp/heredoc_pipe", O_CREAT | O_WRONLY | O_TRUNC, 0644);
     if (fd == -1)
     {
-        ft_putchar_fd("Error opening heredoc", 2);
+        ft_putstr_fd("Error opening heredoc", 2);
         return ;
     }
     while (1)
     {
         line = readline(">");
+        if (strncmp(line, heredoc_token->next->value, ft_strlen(heredoc_token->next->value)) == 0)
+            break;
         if (line == NULL)
             break ;
         write(fd, line, ft_strlen(line));
@@ -60,13 +62,13 @@ int main(int argc, char **argv, char **env)
                 curr_tkn = tkn_lst;
                 while (curr_tkn)
                 {
-                    if (curr_tkn->type == HEREDOC)
+                    if (ft_strncmp(curr_tkn->value, ">>", 2) == 0)
                     {
                         process_heredoc(curr_tkn);
                     }
                     else
                     {
-                        expand_variables(curr_tkn, env_lst);
+                        expand_variables(&tkn_lst, curr_tkn, env_lst);
                     }
                     curr_tkn = curr_tkn->next;
                 }

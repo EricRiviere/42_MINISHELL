@@ -60,22 +60,6 @@ void    add_token(t_token **tkn_lst, t_token *token)
     }
 }
 
-void remove_token(t_token **head, t_token *to_remove)
-{
-    if (!head || !*head || !to_remove)
-        return;
-
-    if (to_remove->prev)
-        to_remove->prev->next = to_remove->next;
-    if (to_remove->next)
-        to_remove->next->prev = to_remove->prev;
-    if (*head == to_remove)
-        *head = to_remove->next;
-    free(to_remove->value);
-    free(to_remove);
-}
-
-
 void    free_tkn_lst(t_token *tkn_lst)
 {
     t_token *next;

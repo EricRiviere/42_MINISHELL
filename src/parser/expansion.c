@@ -51,7 +51,7 @@ static void handle_variable_expansion(t_expand_args *args)
     args->sub_expand = get_env_value(args->temp, args->env_lst);
     free(args->temp);
     if (args->token->type == WORD && !args->sub_expand)
-        args->sub_expand = ft_strdup("");
+        args->sub_expand = NULL;
     args->expand = ft_strjoin_free(args->expand, args->sub_expand);
 }
 
@@ -69,7 +69,7 @@ char *expand_value(t_token *token, t_env *env_lst)
 {
     t_expand_args args;
 
-    if (token->prev && ft_strncmp(token->prev->value, "<<", 2) == 0)
+    if (token->prev && token->prev->value && ft_strncmp(token->prev->value, "<<", 2) == 0)
         return (ft_strdup(token->value));
 
     args.token = token;
@@ -91,7 +91,7 @@ char *expand_value(t_token *token, t_env *env_lst)
 }
 
 
-void expand_variables(t_token *token, t_env *env_lst)
+void expand_variables(t_token **tkn_lst ,t_token *token, t_env *env_lst)
 {
     char *new_value;
 
@@ -101,11 +101,6 @@ void expand_variables(t_token *token, t_env *env_lst)
             new_value = expand_value(token, env_lst);
         else
             return;
-        if (!new_value)
-        {
-            remove_token(env_lst, token);
-            return;
-        }
         // Libera el valor anterior y actualiza con el nuevo
         free(token->value);
         token->value = new_value;

@@ -84,7 +84,6 @@ char    *get_env_value(char *str, t_env *env_list);
 t_args  *pass_args(char *line, int *i, t_token **tkn_lst, int spaces);
 t_token *init_token(t_type type);
 void    add_token(t_token **tkn_lst, t_token *token);
-void remove_token(t_token **head, t_token *to_remove);
 void    free_tkn_lst(t_token *tkn_lst);
 t_token    *parse_quote(t_args *args, char quote, int start, int end);
 t_token   *manage_quote(t_args *args, int start);
@@ -102,5 +101,5 @@ int syntax_check(t_token *tkn_lst);
 char *ft_strjoin_free(char *s1, char *s2);
 int is_valid_env_char(char c);
 char *expand_value(t_token *token, t_env *env_lst);//*refactorizar muy larga
-void expand_variables(t_token *token, t_env *env_lst);
+void expand_variables(t_token **tkn_lst, t_token *token, t_env *env_lst);
 #endif
