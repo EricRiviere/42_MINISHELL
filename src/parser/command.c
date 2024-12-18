@@ -48,7 +48,7 @@ t_command **commands(t_token *tkn_lst)
         cmd->args = args;
         cmd->redirections = redir;
 
-        while (curr_tkn && ft_strncmp(curr_tkn->value, "|", 1) != 0)
+        while (curr_tkn && !(curr_tkn->type == 2 && ft_strncmp(curr_tkn->value, "|", 1) == 0))
         {
             if (curr_tkn->type == 2 && curr_tkn->next) // Redirección
             {
@@ -84,7 +84,7 @@ t_command **commands(t_token *tkn_lst)
         cmd_list[cmd_index] = cmd;
         cmd_index++;
 
-        if (curr_tkn && ft_strncmp(curr_tkn->value, "|", 1) == 0)
+        if (curr_tkn && curr_tkn->type == 2 && ft_strncmp(curr_tkn->value, "|", 1) == 0)
             curr_tkn = curr_tkn->next;
     }
 
@@ -98,34 +98,47 @@ void free_cmd_list(t_command **cmd_list)
 
     while (cmd_list[i])
     {
+        t_command *cmd = cmd_list[i];
         int j = 0;
-        while (cmd_list[i]->args[j])
+
+        // Liberar argumentos
+        while (cmd->args[j])
         {
-            free(cmd_list[i]->args[j]);
+            free(cmd->args[j]);
             j++;
         }
-        free(cmd_list[i]->args);
+        free(cmd->args);
 
-        j = 0;
-        while (cmd_list[i]->redirections->operator[j])
+        // Liberar redirecciones
+        t_redir *redir = cmd->redirections;
+        if (redir)
         {
-            free(cmd_list[i]->redirections->operator[j]);
-            j++;
-        }
-        free(cmd_list[i]->redirections->operator);
+            j = 0;
+            while (redir->operator[j])
+            {
+                free(redir->operator[j]);
+                j++;
+            }
+            free(redir->operator);
 
-        j = 0;
-        while (cmd_list[i]->redirections->file[j])
-        {
-            free(cmd_list[i]->redirections->file[j]);
-            j++;
+            j = 0;
+            while (redir->file[j])
+            {
+                free(redir->file[j]);
+                j++;
+            }
+            free(redir->file);
+            free(redir); // Liberar la estructura redirección
         }
-        free(cmd_list[i]->redirections->file);
 
-        free(cmd_list[i]->cmd);
-        free(cmd_list[i]);
+        // Liberar comando principal
+        free(cmd->cmd);
+
+        // Liberar el comando completo
+        free(cmd);
         i++;
     }
+
+    // Liberar lista de comandos
     free(cmd_list);
 }
-

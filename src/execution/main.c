@@ -16,8 +16,11 @@ static void process_heredoc(t_token *heredoc_token)
     while (1)
     {
         line = readline(">");
-        if (strncmp(line, heredoc_token->next->value, ft_strlen(heredoc_token->next->value)) == 0)
+        if (ft_strncmp(line, heredoc_token->next->value, ft_strlen(heredoc_token->next->value)) == 0)
+        {
+            free(line);
             break;
+        }
         if (line == NULL)
             break ;
         write(fd, line, ft_strlen(line));
