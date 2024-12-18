@@ -53,7 +53,7 @@ void print_commands(char *line, t_command **cmd_list)
         if (curr_cmd->args && curr_cmd->args[0])
         {
             for (int j = 0; curr_cmd->args[j]; j++)
-                printf(" %s", curr_cmd->args[j]);
+                printf(" *%s*", curr_cmd->args[j]);
         }
         else
         {
